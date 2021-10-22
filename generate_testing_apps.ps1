@@ -148,10 +148,10 @@ $beltOrders = @{}
 
 ForEach ($student in $studentList) {
   $fullName = $student.'first name' + ' ' + $student.'last name'
+  $class = $student.programs
   $belt = $student.'current ranks'
   $nextBelt = GetNextBelt $belt $class
   $beltSize = $student.'belt size'
-  $class = $student.programs
   $studentNum = $student.pin
 
   if (!$beltOrders[$nextBelt]) {
