@@ -50,7 +50,7 @@ Function OpenWordDoc {
   param(
     [string]$Filename
   )
-  $Word=NEW-Object –comobject Word.Application
+  $Word = New-Object -ComObject Word.Application
   Return $Word.documents.open($Filename)
 }
 
@@ -60,7 +60,7 @@ Function SearchAWord {
     [string]$findText,
     [string]$replaceWithText
   )
-  $FindReplace=$Document.ActiveWindow.Selection.Find
+  $FindReplace = $Document.ActiveWindow.Selection.Find
   $matchCase = $false;
   $matchWholeWord = $true;
   $matchWildCards = $false;
@@ -113,15 +113,18 @@ ForEach ($student in $studentTable) {
   Write-Host "ID: $($studentNum)"
   if ($class -eq 'Little Dragons') {
     Write-Host "Form: $($class)"
-    # $Doc=OpenWordDoc -Filename "little_dragon.docx"
-    # SearchAWord –Document $Doc -findtext 'something' -replacewithtext 'anotherthing'
-    # SaveAsWordDoc –document $Doc –Filename $Savename
+    $Doc = OpenWordDoc -Filename "little_dragon.docx"
+    SearchAWord –Document $Doc -findtext '<<NAME>>' -replacewithtext $fullName
+    SearchAWord –Document $Doc -findtext '<<ID>>' -replacewithtext $studentNum
+    SearchAWord –Document $Doc -findtext '<<BELT>>' -replacewithtext $belt
+    SaveAsWordDoc –document $Doc –Filename ${fullName}_${belt}.docx
   }
   else {
     Write-Host "Form: $($belt)"
-    # $Doc=OpenWordDoc -Filename "$belt.docx"
-    # SearchAWord –Document $Doc -findtext 'something' -replacewithtext 'anotherthing'
-    # SaveAsWordDoc –document $Doc –Filename $Savename
+    $Doc = OpenWordDoc -Filename "$belt.docx"
+    SearchAWord –Document $Doc -findtext '<<NAME>>' -replacewithtext $fullName
+    SearchAWord –Document $Doc -findtext '<<ID>>' -replacewithtext $studentNum
+    SaveAsWordDoc –document $Doc –Filename ${fullName}_${belt}.docx
   }
   Write-Host ""
 }
