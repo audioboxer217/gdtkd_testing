@@ -142,8 +142,9 @@ if (!$dueDate) {
 }
 
 $studentTable = Import-Csv -Path $studentFile
+$studentList = $studentTable | Where-Object {$_.'current ranks' -notlike '*Black*'}
 
-ForEach ($student in $studentTable) {
+ForEach ($student in $studentList) {
   $fullName = $student.'first name' + ' ' + $student.'last name'
   $belt = $student.'current ranks'
   $nextBelt = GetNextBelt $belt $class
