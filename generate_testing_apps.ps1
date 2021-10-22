@@ -144,6 +144,8 @@ if (!$dueDate) {
 $studentTable = Import-Csv -Path $studentFile
 $studentList = $studentTable | Where-Object {$_.'current ranks' -notlike '*Black*'}
 
+$beltOrders = @{}
+
 ForEach ($student in $studentList) {
   $fullName = $student.'first name' + ' ' + $student.'last name'
   $belt = $student.'current ranks'
@@ -151,6 +153,17 @@ ForEach ($student in $studentList) {
   $beltSize = $student.'belt size'
   $class = $student.programs
   $studentNum = $student.pin
+
+  if (!$beltOrders[$nextBelt]) {
+    $beltOrders[$nextBelt] = @{}
+  }
+
+  if (!$beltOrders[$nextBelt][$beltSize]) {
+    $beltOrders[$nextBelt][$beltSize] = 1
+  } 
+  else {
+    $beltOrders[$nextBelt][$beltSize] += 1
+  }
 
   Write-Host "Name: $($fullName)"
   Write-Host "ID: $($studentNum)"
@@ -177,4 +190,8 @@ ForEach ($student in $studentList) {
     SaveAsWordDoc –document $Doc –Filename ${fullName}_${nextBelt}.docx
   }
   Write-Host ""
+}
+
+foreach ($item in $beltOrders) {
+  Write-Host $beltOrders[$item]
 }
