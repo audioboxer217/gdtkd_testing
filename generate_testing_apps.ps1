@@ -46,6 +46,46 @@ Function GetStudentFile {
   Invoke-WebRequest -WebSession $session -Outfile studentFile.csv -Uri $kicksiteURL
 }
 
+Function GetNextBelt {
+  param(
+    [string]$belt,
+    [string]$class
+  )
+
+    $beltCollection = @("White Belt")
+
+    if ($class -eq 'Little Dragons') {
+      $beltCollection += @(
+        "White w/ Yellow Stripe",
+        "White w/ Orange Stripe",
+        "White w/ Green Stripe",
+        "White w/ Blue Stripe",
+        "White w/ Red Stripe"
+      )
+    }
+
+    $beltCollection += @(
+      "Yellow Stripe",
+      "Yellow Belt",
+      "Orange Stripe",
+      "Orange Belt",
+      "Green Stripe",
+      "Green Belt",
+      "Blue Stripe",
+      "Blue Belt",
+      "Red Stripe",
+      "Red Belt",
+      "Brown Stripe",
+      "Brown Belt",
+      "Black Stripe"
+    )
+
+    $currBeltIndex = $beltCollection.IndexOf($belt)
+
+    return $beltCollection[$currBeltIndex + 1]
+
+}
+
 Function OpenWordDoc {
   param(
     [string]$Filename
@@ -111,20 +151,26 @@ ForEach ($student in $studentTable) {
 
   Write-Host "Name: $($fullName)"
   Write-Host "ID: $($studentNum)"
+  $nextBelt = GetNextBelt $belt $class
+
   if ($class -eq 'Little Dragons') {
     Write-Host "Form: $($class)"
+    Write-Host "Next Belt: $($nextBelt)"
+
     $Doc = OpenWordDoc -Filename "little_dragon.docx"
     SearchAWord –Document $Doc -findtext '<<NAME>>' -replacewithtext $fullName
     SearchAWord –Document $Doc -findtext '<<ID>>' -replacewithtext $studentNum
     SearchAWord –Document $Doc -findtext '<<BELT>>' -replacewithtext $belt
-    SaveAsWordDoc –document $Doc –Filename ${fullName}_${belt}.docx
+    SaveAsWordDoc –document $Doc –Filename ${fullName}_${nextBelt}.docx
   }
   else {
-    Write-Host "Form: $($belt)"
+    Write-Host "Form: $($nextBelt)"
+    Write-Host "Next Belt: $($nextBelt)"
+
     $Doc = OpenWordDoc -Filename "$belt.docx"
     SearchAWord –Document $Doc -findtext '<<NAME>>' -replacewithtext $fullName
     SearchAWord –Document $Doc -findtext '<<ID>>' -replacewithtext $studentNum
-    SaveAsWordDoc –document $Doc –Filename ${fullName}_${belt}.docx
+    SaveAsWordDoc –document $Doc –Filename ${fullName}_${nextBelt}.docx
   }
   Write-Host ""
 }
