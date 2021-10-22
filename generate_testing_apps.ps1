@@ -192,10 +192,13 @@ ForEach ($student in $studentList) {
   Write-Host ""
 }
 
+$orderTotal = 0
 foreach ($item in $beltOrders.Keys) {
   Write-Host $item
   $sizes = $beltOrders[$item]
+  $orderTotal += ($sizes.Values | Measure-Object -Sum).Sum
   foreach ($size in $sizes.Keys) {
     Write-Host "$($size): $($beltOrders[$item][$size])"
   }
 }
+Write-Host $orderTotal
