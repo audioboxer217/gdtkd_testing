@@ -112,8 +112,8 @@ Function SearchAWord {
   $matchDiacritics = $false;
   $matchAlefHamza = $false;
   $matchControl = $false;
-  $read_only = $false;
-  $visible = $true;
+  # $read_only = $false;
+  # $visible = $true;
   $replace = 2;
   $wrap = 1;
   $FindReplace.Execute($findText, $matchCase, $matchWholeWord, $matchWildCards, $matchSoundsLike, $matchAllWordForms, $forward, $wrap, $format, $replaceWithText, $replace, $matchKashida ,$matchDiacritics, $matchAlefHamza, $matchControl)
