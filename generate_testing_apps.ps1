@@ -146,6 +146,7 @@ $studentTable = Import-Csv -Path $studentFile
 ForEach ($student in $studentTable) {
   $fullName = $student.'first name' + ' ' + $student.'last name'
   $belt = $student.'current ranks'
+  $beltSize = $student.'belt size'
   $class = $student.programs
   $studentNum = $student.pin
 
@@ -161,6 +162,7 @@ ForEach ($student in $studentTable) {
     SearchAWord –Document $Doc -findtext '<<NAME>>' -replacewithtext $fullName
     SearchAWord –Document $Doc -findtext '<<ID>>' -replacewithtext $studentNum
     SearchAWord –Document $Doc -findtext '<<BELT>>' -replacewithtext $belt
+    SearchAWord –Document $Doc -findtext '<<SIZE>>' -replacewithtext $beltSize
     SaveAsWordDoc –document $Doc –Filename ${fullName}_${nextBelt}.docx
   }
   else {
@@ -170,6 +172,7 @@ ForEach ($student in $studentTable) {
     $Doc = OpenWordDoc -Filename "$belt.docx"
     SearchAWord –Document $Doc -findtext '<<NAME>>' -replacewithtext $fullName
     SearchAWord –Document $Doc -findtext '<<ID>>' -replacewithtext $studentNum
+    SearchAWord –Document $Doc -findtext '<<SIZE>>' -replacewithtext $beltSize
     SaveAsWordDoc –document $Doc –Filename ${fullName}_${nextBelt}.docx
   }
   Write-Host ""
