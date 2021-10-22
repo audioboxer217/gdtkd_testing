@@ -146,13 +146,13 @@ $studentTable = Import-Csv -Path $studentFile
 ForEach ($student in $studentTable) {
   $fullName = $student.'first name' + ' ' + $student.'last name'
   $belt = $student.'current ranks'
+  $nextBelt = GetNextBelt $belt $class
   $beltSize = $student.'belt size'
   $class = $student.programs
   $studentNum = $student.pin
 
   Write-Host "Name: $($fullName)"
   Write-Host "ID: $($studentNum)"
-  $nextBelt = GetNextBelt $belt $class
 
   if ($class -eq 'Little Dragons') {
     Write-Host "Form: $($class)"
