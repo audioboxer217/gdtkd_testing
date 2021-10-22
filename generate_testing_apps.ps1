@@ -112,8 +112,8 @@ Function SearchAWord {
   $matchDiacritics = $false;
   $matchAlefHamza = $false;
   $matchControl = $false;
-  $read_only = $false;
-  $visible = $true;
+  # $read_only = $false;
+  # $visible = $true;
   $replace = 2;
   $wrap = 1;
   $FindReplace.Execute($findText, $matchCase, $matchWholeWord, $matchWildCards, $matchSoundsLike, $matchAllWordForms, $forward, $wrap, $format, $replaceWithText, $replace, $matchKashida ,$matchDiacritics, $matchAlefHamza, $matchControl)
@@ -146,6 +146,8 @@ $studentList = $studentTable | Where-Object {$_.'current ranks' -notlike '*Black
 
 $beltOrders = @{}
 
+New-Item -ItemType Directory -Force -Path "${PSScriptRoot}\output" | Out-Null
+
 ForEach ($student in $studentList) {
   $fullName = $student.'first name' + ' ' + $student.'last name'
   $class = $student.programs
@@ -153,6 +155,7 @@ ForEach ($student in $studentList) {
   $nextBelt = GetNextBelt $belt $class
   $beltSize = $student.'belt size'
   $studentNum = $student.pin
+  $studentAge = $student.age
 
   if (!$beltOrders[$nextBelt]) {
     $beltOrders[$nextBelt] = @{}
@@ -171,23 +174,28 @@ ForEach ($student in $studentList) {
   if ($class -eq 'Little Dragons') {
     Write-Host "Form: $($class)"
     Write-Host "Next Belt: $($nextBelt)"
+    $nextBeltClean = $nextBelt.replace('w/','+')
 
-    $Doc = OpenWordDoc -Filename "little_dragon.docx"
-    SearchAWord –Document $Doc -findtext '<<NAME>>' -replacewithtext $fullName
-    SearchAWord –Document $Doc -findtext '<<ID>>' -replacewithtext $studentNum
-    SearchAWord –Document $Doc -findtext '<<BELT>>' -replacewithtext $belt
-    SearchAWord –Document $Doc -findtext '<<SIZE>>' -replacewithtext $beltSize
-    SaveAsWordDoc –document $Doc –Filename ${fullName}_${nextBelt}.docx
+    $Doc = OpenWordDoc -Filename "${PSScriptRoot}\templates\Little Dragons.docx"
+    SearchAWord -Document $Doc -findtext 'TEST_DATE' -replacewithtext $testDate | Out-Null
+    SearchAWord -Document $Doc -findtext 'DUE_DATE' -replacewithtext $dueDate | Out-Null
+    SearchAWord -Document $Doc -findtext 'STUDENT_NAME' -replacewithtext $fullName | Out-Null
+    SearchAWord -Document $Doc -findtext 'ID' -replacewithtext $studentNum | Out-Null
+    SearchAWord -Document $Doc -findtext 'BELT_COLOR' -replacewithtext $nextBelt | Out-Null
+    SearchAWord -Document $Doc -findtext 'BELT_SIZE' -replacewithtext $beltSize | Out-Null
+    SaveAsWordDoc -document $Doc -Filename "${PSScriptRoot}\output\${fullName}- ${nextBeltClean}.docx"
   }
   else {
     Write-Host "Form: $($nextBelt)"
     Write-Host "Next Belt: $($nextBelt)"
 
-    $Doc = OpenWordDoc -Filename "$belt.docx"
-    SearchAWord –Document $Doc -findtext '<<NAME>>' -replacewithtext $fullName
-    SearchAWord –Document $Doc -findtext '<<ID>>' -replacewithtext $studentNum
-    SearchAWord –Document $Doc -findtext '<<SIZE>>' -replacewithtext $beltSize
-    SaveAsWordDoc –document $Doc –Filename ${fullName}_${nextBelt}.docx
+    $Doc = OpenWordDoc -Filename "${PSScriptRoot}\templates\$nextBelt.docx"
+    SearchAWord -Document $Doc -findtext 'TEST_DATE' -replacewithtext $testDate | Out-Null
+    SearchAWord -Document $Doc -findtext 'DUE_DATE' -replacewithtext $dueDate | Out-Null
+    SearchAWord -Document $Doc -findtext 'STUDENT_NAME' -replacewithtext $fullName | Out-Null
+    SearchAWord -Document $Doc -findtext 'ID' -replacewithtext $studentNum | Out-Null
+    SearchAWord -Document $Doc -findtext 'STUDENT_AGE' -replacewithtext $studentAge | Out-Null
+    SaveAsWordDoc -document $Doc -Filename "${PSScriptRoot}\output\${fullName} - ${nextBelt}.docx"
   }
   Write-Host ""
 }
