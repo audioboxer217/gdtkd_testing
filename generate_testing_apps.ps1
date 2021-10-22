@@ -192,6 +192,10 @@ ForEach ($student in $studentList) {
   Write-Host ""
 }
 
-foreach ($item in $beltOrders) {
-  Write-Host $beltOrders[$item]
+foreach ($item in $beltOrders.Keys) {
+  Write-Host $item
+  $sizes = $beltOrders[$item]
+  foreach ($size in $sizes.Keys) {
+    Write-Host "$($size): $($beltOrders[$item][$size])"
+  }
 }
