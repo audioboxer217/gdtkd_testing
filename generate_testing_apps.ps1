@@ -146,7 +146,9 @@ $studentList = $studentTable | Where-Object {$_.'current ranks' -notlike '*Black
 
 $beltOrders = @{}
 
-New-Item -ItemType Directory -Force -Path "${PSScriptRoot}\output" | Out-Null
+$workingDir = Get-Location
+$outputDir = "${workingDir}/testing_forms"
+New-Item -ItemType Directory -Force -Path "$outputDir" | Out-Null
 
 ForEach ($student in $studentList) {
   $fullName = $student.'first name' + ' ' + $student.'last name'
@@ -183,7 +185,7 @@ ForEach ($student in $studentList) {
     SearchAWord -Document $Doc -findtext 'ID' -replacewithtext $studentNum | Out-Null
     SearchAWord -Document $Doc -findtext 'BELT_COLOR' -replacewithtext $nextBelt | Out-Null
     SearchAWord -Document $Doc -findtext 'BELT_SIZE' -replacewithtext $beltSize | Out-Null
-    SaveAsWordDoc -document $Doc -Filename "${PSScriptRoot}\output\${fullName}- ${nextBeltClean}.docx"
+    SaveAsWordDoc -document $Doc -Filename "$outputDir\${fullName}- ${nextBeltClean}.docx"
   }
   else {
     Write-Host "Form: $($nextBelt)"
@@ -195,18 +197,18 @@ ForEach ($student in $studentList) {
     SearchAWord -Document $Doc -findtext 'STUDENT_NAME' -replacewithtext $fullName | Out-Null
     SearchAWord -Document $Doc -findtext 'ID' -replacewithtext $studentNum | Out-Null
     SearchAWord -Document $Doc -findtext 'STUDENT_AGE' -replacewithtext $studentAge | Out-Null
-    SaveAsWordDoc -document $Doc -Filename "${PSScriptRoot}\output\${fullName} - ${nextBelt}.docx"
+    SaveAsWordDoc -document $Doc -Filename "$outputDir\${fullName} - ${nextBelt}.docx"
   }
   Write-Host ""
 }
 
 $orderTotal = 0
 foreach ($item in $beltOrders.Keys) {
-  Write-Host $item
-  $sizes = $beltOrders[$item]
-  $orderTotal += ($sizes.Values | Measure-Object -Sum).Sum
-  foreach ($size in $sizes.Keys) {
-    Write-Host "$($size): $($beltOrders[$item][$size])"
-  }
+ Write-Host $item
+ $sizes = $beltOrders[$item]
+ $orderTotal += ($sizes.Values | Measure-Object -Sum).Sum
+ foreach ($size in $sizes.Keys) {
+   Write-Host "$($size): $($beltOrders[$item][$size])"
+ }
 }
 Write-Host $orderTotal
