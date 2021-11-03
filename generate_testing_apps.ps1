@@ -183,7 +183,8 @@ ForEach ($student in $studentList) {
     SearchAWord -Document $Doc -findtext 'DUE_DATE' -replacewithtext $dueDate | Out-Null
     SearchAWord -Document $Doc -findtext 'STUDENT_NAME' -replacewithtext $fullName | Out-Null
     SearchAWord -Document $Doc -findtext 'ID' -replacewithtext $studentNum | Out-Null
-    SearchAWord -Document $Doc -findtext 'BELT_COLOR' -replacewithtext $nextBelt | Out-Null
+    SearchAWord -Document $Doc -findtext 'CURR_BELT' -replacewithtext $belt | Out-Null
+    SearchAWord -Document $Doc -findtext 'NEXT_BELT' -replacewithtext $nextBelt | Out-Null
     SearchAWord -Document $Doc -findtext 'BELT_SIZE' -replacewithtext $beltSize | Out-Null
     SaveAsWordDoc -document $Doc -Filename "$outputDir\${fullName}- ${nextBeltClean}.docx"
   }
